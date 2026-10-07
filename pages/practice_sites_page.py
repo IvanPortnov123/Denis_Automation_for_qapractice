@@ -16,8 +16,10 @@ class PracticeSitesPage(BasePage):
 
     def __init__(self, page: Page):
         super().__init__(page)
+        # The menu also says "Practice Sites", so the heading is the h1 only.
         self.heading = self.set_locator(
-            "heading", page.get_by_role("heading", name="Practice Sites")
+            "heading",
+            page.locator("h1").get_by_text("Practice Sites", exact=True),
         )
 
         # href is the stable locator. Card titles can be edited without
@@ -62,3 +64,12 @@ class PracticeSitesPage(BasePage):
             self.register_link,
             self.api_link,
         ]
+
+    def sandbox_link(self, path: str):
+        """The card link for one sandbox, found by its href, for example "/register"."""
+        return self.set_locator(path, self.page.locator(f'a[href="{path}"]'))
+
+    def open_sandbox(self, path: str):
+        """Click a sandbox card. Every card says "Start practising", so the href picks it."""
+        self.log.info("Open sandbox %s", path)
+        self.click(self.sandbox_link(path))
